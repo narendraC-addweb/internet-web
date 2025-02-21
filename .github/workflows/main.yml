@@ -1,23 +1,27 @@
-name: Push-to-EC2
-
+name: Push_Code_EC2
 on:
   push:
-    branches: [ master ]
-
+    branches: [master]
 jobs:
-  deploy:
-    name: Push to EC2 Instance
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
-      - name: Deploy to my EC2 instance
-        uses: easingthemes/ssh-deploy@v2.1.5
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.EC_PRI_KEY }}
-          SOURCE: "./"
-          REMOTE_HOST: "13.126.114.64"
-          REMOTE_USER: "ubuntu"
-          TARGET: "/var/www/isp-site"
+      - name: Install SSH keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_ed25519
+          echo "${{ secrets.EC_PRI_KEY }}" > ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+
+      - name: pull 
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            echo "----- Changing Directory -----"
+            cd ${{ secrets.WORK_DIR }}
+
+            echo "----- Git Pull -----"
+            git pull origin ${{ secrets.MAIN_BRANCH }}
+
+
+            echo "------Successfully-------"
