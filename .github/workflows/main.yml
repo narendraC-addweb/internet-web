@@ -1,27 +1,23 @@
-name: Push_Code_EC2
+name: Push-to-EC2
+
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+
 jobs:
-  build:
+  deploy:
+    name: Deploy to EC2 on master branch push
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout the files
+        uses: actions/checkout@v2
 
-      - name: Install SSH keys
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_ed25519
-          echo "${{ secrets.EC_PRI_KEY }}" > ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-
-      - name: pull 
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            echo "----- Changing Directory -----"
-            cd ${{ secrets.WORK_DIR }}
-
-            echo "----- Git Pull -----"
-            git pull origin ${{ secrets.MAIN_BRANCH }}
-
-
-            echo "------Successfully-------"
+      - name: Deploy to Server 1
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC_PRI_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.TARGET_DIR }}
