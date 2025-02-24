@@ -25,3 +25,4 @@ jobs:
 
             echo "----- Git Pull -----"
             git pull origin ${{ secrets.BRANCH }}
+          EOF
