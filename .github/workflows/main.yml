@@ -11,18 +11,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: SSH
+      - name: SSH keyy ins
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          echo "${{ secrets.EC_PRI_KEY }}" > ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.REMOTE_HOST }} > ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
       - name: Connect and pull deploy commands
         run: |
-          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             echo "----- Changing Directory -----"
-            cd ${{ secrets.TARGET_DIR }}
+            cd ${{ secrets.WORK_DIR }}
+
             echo "----- Git Pull -----"
             git pull origin ${{ secrets.BRANCH }}
-          EOF
