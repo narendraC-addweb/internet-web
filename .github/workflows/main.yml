@@ -4,31 +4,26 @@ on:
   push:
     branches:
       - master
-
+      
 jobs:
-  Deploy:
-    name: Deploy to EC2
+  build:
     runs-on: ubuntu-latest
-    
     steps:
-      - uses: actions/checkout@v2 
+      - uses: actions/checkout@v3
 
-      - name: Build & Deploy
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          WORK_DIR: ${{ secrets.WORK_DIR }}
-          BRANCH: ${{ secrets.BRANCH }}
+      - name: SSH
         run: |
-          # Create private key file and set permissions
-          echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+          install -m 600 -D /dev/null ~/.ssh/id_ed25519
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
-          # SSH into the remote host and run commands
-          ssh -o StrictHostKeyChecking=no -i private_key $SSH_USER@$SSH_HOST << 'EOF'
+      - name: Connect and pull deploy commands
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             echo "Changing Directory"
-            cd $WORK_DIR
+            cd ${{ secrets.WORK_DIR }}
 
             echo "Git Pull"
-            git pull origin $BRANCH
+            git pull origin ${{ secrets.BRANCH }}
+            
           EOF
