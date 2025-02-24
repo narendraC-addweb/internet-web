@@ -28,6 +28,6 @@ jobs:
             echo "Changing Directory"
             cd ${{ secrets.GIT_CLONE_DIR }}
             echo "Git Clone"
-            git clone git@github.com:narendraC-addweb/internet-web.git
+            git clone ${{ secrets.GIT_CLONE_SSH_URL }}
             
           EOF
