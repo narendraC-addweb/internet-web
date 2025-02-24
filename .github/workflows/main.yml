@@ -20,3 +20,11 @@ jobs:
           echo "${{ secrets.EC_PRI_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
+      - name: Connect and pull deploy commands
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            echo "----- Changing Directory -----"
+            cd ${{ secrets.TARGET_DIR }}
+
+            echo "----- Git Pull -----"
+            git pull origin ${{ secrets.BRANCH }}
