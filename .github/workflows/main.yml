@@ -4,22 +4,18 @@ on:
   push:
     branches:
       - master
-
+      
 jobs:
-  deploy:
-    name: Deploy to EC2 on master branch push
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout the files
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Set up SSH
+      - name: SSH
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC_PRI_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
+          install -m 600 -D /dev/null ~/.ssh/id_ed25519
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
       - name: Connect and pull deploy commands
         run: |
