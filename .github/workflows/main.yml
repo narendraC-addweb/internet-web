@@ -19,7 +19,7 @@ jobs:
 
       - name: Connect and pull deploy commands
         run: |
-          ssh -t ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
+          ssh -T ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
             echo "----- Changing Directory -----"
             cd ${{ secrets.TARGET_DIR }}
             echo "----- Git Pull -----"
