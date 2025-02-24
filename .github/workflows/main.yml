@@ -27,6 +27,6 @@ jobs:
 
             echo "Git Clone"
             cd ${{secrets.GIT_CLONE_DIR}}
-            git clone {{secrets.GIT_CLONE_SSH_URL}}
+            git clone {{ secrets.GIT_CLONE_SSH_URL }}
             
           EOF
