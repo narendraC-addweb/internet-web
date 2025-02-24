@@ -22,7 +22,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
       - name: Connect and pull deploy commands
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
             echo "----- Changing Directory -----"
             cd ${{ secrets.TARGET_DIR }}
 
