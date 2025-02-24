@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+
 jobs:
   Deploy:
     name: Deploy to EC2
@@ -11,23 +12,23 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2 
+
       - name: Build & Deploy
         env:
-            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{secrets.SSH_HOST}}
-            USER_NAME: ${{secrets.SSH_USER}}
-      
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          WORK_DIR: ${{ secrets.WORK_DIR }}
+          BRANCH: ${{ secrets.BRANCH }}
         run: |
+          # Create private key file and set permissions
           echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${SSH_USER}@${SSH_HOST} '
-          
-      - name: Connect and pull deploy commands
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+
+          # SSH into the remote host and run commands
+          ssh -o StrictHostKeyChecking=no -i private_key $SSH_USER@$SSH_HOST << 'EOF'
             echo "Changing Directory"
-            cd ${{ secrets.WORK_DIR }}
+            cd $WORK_DIR
 
             echo "Git Pull"
-            git pull origin ${{ secrets.BRANCH }}
-            
+            git pull origin $BRANCH
           EOF
