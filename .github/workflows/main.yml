@@ -13,13 +13,13 @@ jobs:
 
       - name: SSH
         run: |
-          install -m 600 -D /dev/null ~/.ssh/id_ed25519.pub
-          echo "${{ secrets.PUB_KEY }}" > ~/.ssh/id_ed25519.pub
+          install -m 600 -D /dev/null ~/.ssh/id_ed25519
+          echo "${{ secrets.EC_PRI_KEY }}" > ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.REMOTE_HOST }} > ~/.ssh/known_hosts
 
       - name: Connect and pull deploy commands
         run: |
-          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
+          ssh ${{ secrets.PUB_KEY }} ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
             echo "----- Changing Directory -----"
             cd ${{ secrets.TARGET_DIR }}
             echo "----- Git Pull -----"
