@@ -10,24 +10,25 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: SSH
+      - name: SSH Key Install on git ubuntu:latest
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_ed25519
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
-      - name: Connect and pull deploy commands
+      - name: Connect SSH Terminal and Execute Pull GitHub Commands
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            echo "Changing Directory"
+            echo "-----------Changing Directory------------"
             cd ${{ secrets.WORK_DIR }}
 
-            echo "Git Pull"
+            echo "-----------Git Pull------------"
             git pull origin ${{ secrets.BRANCH }}
 
-            echo "Changing Directory"
+            echo "-----------------Changing Directory /var/www/html----------------"
             cd ${{ secrets.GIT_CLONE_DIR }}
-            echo "Git Clone"
+            echo "-----------------Git Clone-------------------"
             git clone ${{ secrets.GIT_CLONE_SSH_URL }}
-            
+
+            echo "All Tasks Sucessfully Run..!!! Thanks...... Good Byy!!!......... "
           EOF
