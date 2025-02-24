@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: SSH keyy ins
+      - name: SSH
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_ed25519
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
@@ -20,9 +20,9 @@ jobs:
       - name: Connect and pull deploy commands
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            echo "----- Changing Directory -----"
+            echo "Changing Directory"
             cd ${{ secrets.WORK_DIR }}
 
-            echo "----- Git Pull -----"
+            echo "Git Pull"
             git pull origin ${{ secrets.BRANCH }}
           EOF
