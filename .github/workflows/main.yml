@@ -26,6 +26,7 @@ jobs:
             git pull origin ${{ secrets.BRANCH }}
 
             echo "Git Clone"
-            git clone ${{secrets.GIT_CLONE_DIR}}
+            cd ${{secrets.GIT_CLONE_DIR}}
+            git clone {{secrets.GIT_CLONE_SSH_URL}}
             
           EOF
