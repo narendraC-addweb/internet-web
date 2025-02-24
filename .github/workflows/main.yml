@@ -25,8 +25,9 @@ jobs:
             echo "Git Pull"
             git pull origin ${{ secrets.BRANCH }}
 
+            echo "Changing Directory"
+            cd ${{ secrets.GIT_CLONE_DIR }}
             echo "Git Clone"
-            cd ${{ ecrets.GIT_CLONE_DIR }}
-            git clone {{ secrets.GIT_CLONE_DIR }}
+            git clone ${{ secrets.GIT_CLONE_DIR }}
             
           EOF
