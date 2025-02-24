@@ -4,19 +4,23 @@ on:
   push:
     branches:
       - master
-      
-jobs:
-  build:
+      jobs:
+  deploy:
+    name: Deploy to EC2 on master branch push
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout the files
+        uses: actions/checkout@v2
 
-      - name: SSH
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_ed25519
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-
+      - name: Deploy to Server 1
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          TARGET: ${{ secrets.WORK_DIR }}
+          
       - name: Connect and pull deploy commands
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
@@ -25,9 +29,5 @@ jobs:
 
             echo "Git Pull"
             git pull origin ${{ secrets.BRANCH }}
-
-      - name: List command ls
-        run: |
-            echo "List Show"
-            ls
+            
           EOF
