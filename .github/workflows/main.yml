@@ -16,9 +16,13 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
+      - name: Connect SSH Terminal and Execute Pull GitHub Commands
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
 
-            echo "-----------Rsynce------------"
-          rsync -avzhe "ssh -i aws.pem" docker.sh  ubuntu@13.201.85.38:/home/ubuntu
-
+            echo "-----------Rsync Command------------"
+          rsync -avzhe "ssh -i aws.pem" /var/www/internet-web ubuntu@13.201.85.38:/home/ubuntu
+          
             echo "All Tasks Sucessfully Run..!!! Thanks...... Good Byy!!!......... "
           EOF
+
