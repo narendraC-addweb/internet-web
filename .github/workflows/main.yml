@@ -20,7 +20,7 @@ jobs:
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             echo "-----------Changing Directory------------"
-          rsync -avzhe "ssh -i ${{ secrets.REMOTE_AWS_KEY }}" docker.sh  ubuntu@13.201.85.38:/home/ubuntu
+          rsync -avzhe "ssh -i aws.pem" docker.sh  ubuntu@13.201.85.38:/home/ubuntu
 
             echo "All Tasks Sucessfully Run..!!! Thanks...... Good Byy!!!......... "
           EOF
