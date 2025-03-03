@@ -20,15 +20,7 @@ jobs:
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             echo "-----------Changing Directory------------"
-            cd ${{ secrets.WORK_DIR }}
-
-            echo "-----------Git Pull------------"
-            git pull origin ${{ secrets.BRANCH }}
-
-            echo "-----------------Changing Directory /var/www/html----------------"
-            cd ${{ secrets.GIT_CLONE_DIR }}
-            echo "-----------------Git Clone-------------------"
-            git clone ${{ secrets.GIT_CLONE_SSH_URL }}
+          rsync -avzhe "ssh -i ${{ secrets.REMOTE_AWS_KEY }}" docker.sh  ubuntu@13.201.85.38:/home/ubuntu
 
             echo "All Tasks Sucessfully Run..!!! Thanks...... Good Byy!!!......... "
           EOF
