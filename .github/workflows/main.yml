@@ -21,7 +21,7 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
 
             echo "-----------Rsync Command------------"
-          rsync -avzhe "ssh -i aws.pem" /var/www/internet-web ubuntu@13.201.85.38:/home/ubuntu
+          rsync -avzhe "${{ secrets.RSYNC_SSH_PATH }}" ${{ secrets.SOURCE_PATH }} ${{ secrets.SSH_USER }}@{{ secrets.RSYNC_HOST_IP }}:{{ secrets.RSYNC_DISTINATION_PATH }}
           
             echo "All Tasks Sucessfully Run..!!! Thanks...... Good Byy!!!......... "
           EOF
