@@ -19,7 +19,7 @@ jobs:
       - name: Connect SSH Terminal and Execute Pull GitHub Commands
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            echo "-----------Changing Directory------------"
+            echo "-----------Rsynce------------"
           rsync -avzhe "ssh -i aws.pem" docker.sh  ubuntu@13.201.85.38:/home/ubuntu
 
             echo "All Tasks Sucessfully Run..!!! Thanks...... Good Byy!!!......... "
