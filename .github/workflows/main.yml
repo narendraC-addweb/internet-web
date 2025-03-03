@@ -4,24 +4,26 @@ on:
   push:
     branches:
       - master  
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: SSH Key Install on git ubuntu:latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: SSH Key Install on GitHub Ubuntu
         run: |
-          install -m 600 -D /dev/null ~/.ssh/id_ed25519
+          mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-      - name: Connect SSH Terminal and Execute Pull GitHub Commands
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Connect SSH and Run Rsync Command
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-
-      - name: Rsync Command run on Terminal
-        run: |
-          rsync -avzhe "${{ secrets.RSYNC_SSH_PATH }}" ${{ secrets.SOURCE_PATH }} ${{ secrets.SSH_USER }}@${{ secrets.RSYNC_HOST_IP }}:${{ secrets.RSYNC_DISTINATION_PATH }}
-          
-            echo "All Tasks Sucessfully Run..!!! Thanks...... Good Byy!!!......... "
+            echo "----------- Running Rsync Command -----------"
+            rsync -avzhe "ssh -i ~/.ssh/id_ed25519" ${{ secrets.SOURCE_PATH }} ${{ secrets.SSH_USER }}@${{ secrets.RSYNC_HOST_IP }}:${{ secrets.RSYNC_DISTINATION_PATH }}
+            echo "All Tasks Successfully Run..!!! Thanks...... Goodbye!!!"
           EOF
